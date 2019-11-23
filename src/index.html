@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Red Square</title>
+    <link href="https://fonts.googleapis.com/css?family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/bootstrap.css">
+    <link rel="stylesheet" href="static/css/main.css">
+</head>
+<body>
+<div class="progress">
+    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+<div class="container">
+
+    <canvas id="GameScene"></canvas>
+    <div class="align-bottom">
+        <kbd>Shift</kbd> <var>- смена гравитации,</var>
+        <kbd>keyUp</kbd> <var>- Прыгать,</var>
+        <kbd>keyLeft</kbd> <var>- Влево,</var>
+        <kbd>keyRight</kbd> <var>- Вправо,</var>
+    </div>
+</div>
+
+<script src="configs/sceneConfig.js"></script>
+<script src="game/playGame.js"></script>
+<script src="startGame.js"></script>
+</body>
+</html>
