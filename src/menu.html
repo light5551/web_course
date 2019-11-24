@@ -42,10 +42,13 @@
     </div>
     <br><br><br>
 
-    <button type="button" class="btn btn-danger btn-lg btn-block" onclick="start()">Начать игру</button>
+    <button type="button" class="btn btn-danger btn-lg btn-block" onclick="send(1)">Начать игру</button>
     <br>
     <br><br>
-    <button type="button" class="btn btn-primary btn-lg btn-block">Выбор уровня</button>
+    <div class="row">
+        <button type="button" class="btn btn-primary btn-lg btn-block"  onclick="send(1)">Первый уровень</button>
+        <button type="button" class="btn btn-primary btn-lg btn-block" onclick="send(2)">Второй уровень</button>
+    </div>
     <br><br><br>
     <h2><i>Records</i></h2>
     <table class="table">
@@ -60,8 +63,10 @@
         </tbody>
     </table>
 </div>
+
 <script>
-    function start() {
+    function send(lvl) {
+        localStorage.lvl = lvl;
         let name = document.getElementById('nickname').value;
         if (name && name.length){
             localStorage.nickname = name;
