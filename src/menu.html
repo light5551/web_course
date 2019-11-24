@@ -9,18 +9,86 @@
         button {
             height: 80px;
         }
+        red {
+            color: red;
+        }
+        blue {
+           color: blue;
+        }
+
     </style>
 </head>
 <body>
+<canvas id="bg-canvas"></canvas>
+
+
+<div class="text-center">
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+        <header class="masthead mb-auto">
+            <div class="inner">
+                <h1 class="display-1"><red>Red</red> && <blue>Blue</blue> Square</h1>
+            </div>
+        </header>
+    </div>
+</div>
+
 <div class="container">
-    <h1 class="display-1">Red && Blue Square</h1>
-    <button type="button" class="btn btn-danger btn-lg btn-block">Начать игру</button>
+
+    <div class="input-group input-group-lg">
+        <div class="input-group-prepend">
+            <span class="input-group-text" ><strong><i>Nickname</i></strong></span>
+        </div>
+        <input type="text" class="form-control" id="nickname" placeholder="Введите свой Nickname" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+    </div>
+    <br><br><br>
+
+    <button type="button" class="btn btn-danger btn-lg btn-block" onclick="start()">Начать игру</button>
     <br>
     <br><br>
     <button type="button" class="btn btn-primary btn-lg btn-block">Выбор уровня</button>
     <br><br><br>
     <h2><i>Records</i></h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nickname</th>
+            <th scope="col">Score</th>
+        </tr>
+        </thead>
+        <tbody id="tbody">
+        </tbody>
+    </table>
 </div>
-
+<script>
+    function start() {
+        let name = document.getElementById('nickname').value;
+        if (name && name.length){
+            localStorage.nickname = name;
+            window.location = 'index.html';
+        }
+    }
+</script>
+<script>
+    function compare(_a, _b) {
+        let a = _a.value,
+            b = _b.value;
+        if (a > b) return -1;
+        if (a === b) return 0;
+        if (a < b)  return 1;
+    }
+    let records = JSON.parse(localStorage.records);
+    let array = [];
+    for (let i in records)
+        array.push({name: i, value: records[i].score});
+    array.sort(compare);
+    let td = '';
+    for (let i = 0; i < array.length; i++){
+        td += '<tr><th scope="row">'+ i.toString() + '</th><td><strong>' + array[i].name +'</strong></td><td><strong><i>' +
+            array[i].value + '</i></strong></td></tr>';
+    }
+    document.getElementById('tbody').innerHTML = td;
+</script>
+<script src="game/background.js"></script>
 </body>
 </html>

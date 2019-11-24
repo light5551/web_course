@@ -1,14 +1,23 @@
 body {
     background: gray;
+
 }
 
 #GameScene {
 }
 
 var {
-    color: #ffffff;
+    color: #000000;
 }
 
 .container {
     padding-top: 200px;
+}
+
+#bg-canvas {
+    z-index: -10;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
 }

@@ -1,16 +1,39 @@
 function playGame(time=0) {
 
     logic();
-
-    context.fillStyle = "#202020";
-    context.fillRect(0, 0, sceneConfig.sceneWidth, sceneConfig.sceneHeight);
-    context.fillStyle = "#ff0000";// hex for red
-    context.beginPath();
-    context.rect( player.x, player.y, player.width, player.height);
-    context.fill();
+    updateGame();
+    updateProgress(time);
     requestAnimationFrame(playGame);
 }
 
+function updateProgress(time){
+    let progress = document.getElementById('myProgress');
+    let fullTime = GAME[localStorage.lvl].fullTime;
+    progress.style.width = Math.floor(time / fullTime * 100).toString() + '%';
+}
+function updateGame() {
+    let img = new Image();   // Создает новое изображение
+    img.src = '../src/static/images/B_IMAGE.jpg';
+    img.addEventListener("load", function() {
+        context.drawImage(img, 0, 0, sceneConfig.sceneWidth, sceneConfig.sceneHeight);
+    }, false);
+    // down road - blue
+    context.fillStyle = COLORS.BLUE;// hex for red
+    context.fillRect(0, sceneConfig.sceneHeight - sceneConfig.offset, sceneConfig.sceneWidth, sceneConfig.sceneHeight);
+    context.beginPath();
+    // up road - red
+    context.fillStyle = COLORS.RED;// hex for red
+    context.fillRect(0, 0, sceneConfig.sceneWidth, sceneConfig.offset);
+    context.beginPath();
+
+    context.fillStyle = player.color;// hex for red
+    context.rect( player.x, gY(player.y), player.width, player.height);
+    context.fill();
+}
+
+function gY(y) {
+    return (y - sceneConfig.offset)
+}
 var player = {
   x: 50,
   y: sceneConfig.sceneHeight - 60,
@@ -19,7 +42,8 @@ var player = {
   dx: 0,
   dy: 0,
   jumping: false,
-  g: 10 // gravitation
+  g: 10, // gravitation
+  color: COLORS.RED
 };
 
 var controller = {
@@ -43,10 +67,15 @@ var controller = {
                 controller.right = key_state;
                 break;
             case keyboard.SHIFT:
-                console.log('SHIFT');
-                if (key_state)
+                if (key_state){
                     player.g = -player.g;
+                    player.color = player.color === COLORS.RED? COLORS.BLUE : COLORS.RED;
+                }
                 break;
+            case keyboard.ESCAPE:
+                if (key_state){
+                    showModal();
+                }
         }
     }
 };
@@ -74,9 +103,9 @@ function logic(){
         player.y = sceneConfig.sceneHeight - player.height;
         player.dy = 0;
     }
-    else if (player.y < 0) {
+    else if (player.y < sceneConfig.offset + player.width/2) {
         player.jumping = false;
-        player.y = 0;
+        player.y = sceneConfig.offset + player.width/2;
         player.dy = 0;
     }
 
