@@ -37,7 +37,7 @@ GAME = {
 GROUND.img1.src = '../src/static/images/B_IMAGE.jpg';
 
 IMAGES = {
-  FON: '../src/static/images/B_IMAGE.jpg',
+  FON: '../src/static/images/b_fon.png',//'../src/static/images/B_IMAGE.jpg',
   BILL: '../src/static/images/bill.png',
   HORROR_BILL: '../src/static/images/horror_bill.png',
   LOSE_BILL: '../src/static/images/l_bill.png',
@@ -53,4 +53,9 @@ BOSS = {
   MIN_OFFSET: -100,
   CURRENT_OFFSET:0,
   INCREASE: true
+};
+
+BULLET = {
+    width: 20,
+    height: 5
 };

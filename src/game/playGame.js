@@ -46,6 +46,8 @@ function coins(coins) {
 }
 // eye(x;y) = (sceneConfig.sceneWidth - 105, sceneConfig.sceneHeight/2 + 10, 20, 20 );
 function shoot() {
+    context.fillStyle = '#ffff00';// hex for red
+    context.fillRect( 105, sceneConfig.sceneHeight/2 + 10, 20, 5 );
     /*
     context.fillStyle = '#ffff00'// hex for red
     context.fillRect(sceneConfig.sceneWidth - 105, sceneConfig.sceneHeight/2 + 10, 20, 20 );
@@ -164,8 +166,11 @@ function logic(){
         player.dy = 0;
     }
 
-    if (player.x < 0 || player.x > sceneConfig.sceneWidth){
+    if (player.x < 0 ){
+        player.dx += 50;
         console.log('GAME OVER')
+    }else if (player.x > sceneConfig.sceneWidth){
+        player.dx -= 50;
     }
 }
 
