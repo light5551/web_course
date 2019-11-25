@@ -43,3 +43,14 @@ IMAGES = {
   LOSE_BILL: '../src/static/images/l_bill.png',
   COIN: '../src/static/images/coin.png'
 };
+
+BOSS = {
+  x: sceneConfig.sceneWidth - 200,
+  y: sceneConfig.sceneHeight/2 -60,
+  width: 200,
+  height: 200,
+  MAX_OFFSET: 100,
+  MIN_OFFSET: -100,
+  CURRENT_OFFSET:0,
+  INCREASE: true
+};

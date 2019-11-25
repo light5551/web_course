@@ -4,9 +4,36 @@ coinImage.src = IMAGES.COIN;
 function playGame(time=0) {
     logic();
     updateGame();
+    bossMove();
+    shoot();
     updateProgress(time);
     context.fill();
     requestAnimationFrame(playGame);
+}
+
+function bossMove() {
+    let img2 = new Image();
+    if (GAME.COMPLETED > 60 && GAME.COMPLETED <= 99)
+        img2.src = IMAGES.HORROR_BILL;
+    else if (GAME.COMPLETED < 60)
+        img2.src = IMAGES.BILL;
+    else  if (GAME.COMPLETED > 99 && GAME.COMPLETED < 120)
+        img2.src = IMAGES.LOSE_BILL;
+
+    if (BOSS.INCREASE){
+        BOSS.CURRENT_OFFSET += 1;
+        if (BOSS.CURRENT_OFFSET >= BOSS.MAX_OFFSET){
+            BOSS.INCREASE = false;
+        }
+    }
+    else{
+        BOSS.CURRENT_OFFSET -= 1;
+        if (BOSS.CURRENT_OFFSET <= BOSS.MIN_OFFSET)
+            BOSS.INCREASE = true;
+    }
+    img2.addEventListener("load", function() {
+        context.drawImage(img2, BOSS.x, BOSS.y + BOSS.CURRENT_OFFSET, BOSS.width, BOSS.height);
+    }, false);
 }
 
 function coins(coins) {
@@ -16,6 +43,15 @@ function coins(coins) {
     coins.forEach((value, index) => {
         value.render(context, 150 , 100, coinImage);
     })
+}
+// eye(x;y) = (sceneConfig.sceneWidth - 105, sceneConfig.sceneHeight/2 + 10, 20, 20 );
+function shoot() {
+    /*
+    context.fillStyle = '#ffff00'// hex for red
+    context.fillRect(sceneConfig.sceneWidth - 105, sceneConfig.sceneHeight/2 + 10, 20, 20 );
+     */
+
+
 }
 
 function updateProgress(time){
@@ -33,18 +69,6 @@ function updateGame() {
         context.drawImage(img, 0, 0, sceneConfig.sceneWidth, sceneConfig.sceneHeight);
     }, false);
 
-    let img2 = new Image();
-    if (GAME.COMPLETED > 60 && GAME.COMPLETED <= 99)
-        img2.src = IMAGES.HORROR_BILL;
-    else if (GAME.COMPLETED < 60)
-        img2.src = IMAGES.BILL;
-    else  if (GAME.COMPLETED > 99 && GAME.COMPLETED < 120)
-        img2.src = IMAGES.LOSE_BILL;
-
-    img2.addEventListener("load", function() {
-        context.drawImage(img2, sceneConfig.sceneWidth - 200, sceneConfig.sceneHeight/2 - 60, 200, 200);
-    }, false);
-
     // down road - blue
     context.fillStyle = COLORS.BLUE;// hex for red
     context.fillRect(0, sceneConfig.sceneHeight - sceneConfig.offset, sceneConfig.sceneWidth, sceneConfig.sceneHeight);
@@ -55,7 +79,10 @@ function updateGame() {
     context.beginPath();
 
     context.fillStyle = player.color;// hex for red
-    context.rect( player.x, gY(player.y), player.width, player.height);
+    //context.rect( player.x, gY(player.y), player.width, player.height);
+    context.fillRect(player.x, gY(player.y), player.width, player.height);
+    context.beginPath();
+
     //context.fill();
 }
 
