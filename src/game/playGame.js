@@ -1,22 +1,50 @@
-function playGame(time=0) {
+let coinImage = new Image();
+coinImage.src = IMAGES.COIN;
 
+function playGame(time=0) {
     logic();
     updateGame();
     updateProgress(time);
+    context.fill();
     requestAnimationFrame(playGame);
+}
+
+function coins(coins) {
+    console.log(coinImage)
+    console.log('coins')
+    cns[0].render(context, 150, 100, coinImage)
+    coins.forEach((value, index) => {
+        value.render(context, 150 , 100, coinImage);
+    })
 }
 
 function updateProgress(time){
     let progress = document.getElementById('myProgress');
     let fullTime = GAME[localStorage.lvl].fullTime;
-    progress.style.width = Math.floor(time / fullTime * 100).toString() + '%';
+    let pr = Math.floor(time / fullTime * 100);
+    progress.style.width = pr.toString() + '%';
+    GAME.COMPLETED = pr;
 }
 function updateGame() {
+
     let img = new Image();   // Создает новое изображение
-    img.src = '../src/static/images/B_IMAGE.jpg';
+    img.src = IMAGES.FON;
     img.addEventListener("load", function() {
         context.drawImage(img, 0, 0, sceneConfig.sceneWidth, sceneConfig.sceneHeight);
     }, false);
+
+    let img2 = new Image();
+    if (GAME.COMPLETED > 60 && GAME.COMPLETED <= 99)
+        img2.src = IMAGES.HORROR_BILL;
+    else if (GAME.COMPLETED < 60)
+        img2.src = IMAGES.BILL;
+    else  if (GAME.COMPLETED > 99 && GAME.COMPLETED < 120)
+        img2.src = IMAGES.LOSE_BILL;
+
+    img2.addEventListener("load", function() {
+        context.drawImage(img2, sceneConfig.sceneWidth - 200, sceneConfig.sceneHeight/2 - 60, 200, 200);
+    }, false);
+
     // down road - blue
     context.fillStyle = COLORS.BLUE;// hex for red
     context.fillRect(0, sceneConfig.sceneHeight - sceneConfig.offset, sceneConfig.sceneWidth, sceneConfig.sceneHeight);
@@ -28,7 +56,7 @@ function updateGame() {
 
     context.fillStyle = player.color;// hex for red
     context.rect( player.x, gY(player.y), player.width, player.height);
-    context.fill();
+    //context.fill();
 }
 
 function gY(y) {

@@ -31,6 +31,15 @@ GAME = {
     },
     2: {
         fullTime: 50 * 1000
-    }
+    },
+    COMPLETED: 0
 };
 GROUND.img1.src = '../src/static/images/B_IMAGE.jpg';
+
+IMAGES = {
+  FON: '../src/static/images/B_IMAGE.jpg',
+  BILL: '../src/static/images/bill.png',
+  HORROR_BILL: '../src/static/images/horror_bill.png',
+  LOSE_BILL: '../src/static/images/l_bill.png',
+  COIN: '../src/static/images/coin.png'
+};

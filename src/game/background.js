@@ -27,7 +27,6 @@ function anim() {
     ++tick;
     if (isNaturalNumber(tick / opts.hueRotationSpeed)) {
         currentHue++;
-        console.log("change");
     }
     if (currentHue == 356) {
         currentHue = 0;

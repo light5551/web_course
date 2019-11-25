@@ -82,17 +82,21 @@
         if (a === b) return 0;
         if (a < b)  return 1;
     }
-    let records = JSON.parse(localStorage.records);
-    let array = [];
-    for (let i in records)
-        array.push({name: i, value: records[i].score});
-    array.sort(compare);
-    let td = '';
-    for (let i = 0; i < array.length; i++){
-        td += '<tr><th scope="row">'+ i.toString() + '</th><td><strong>' + array[i].name +'</strong></td><td><strong><i>' +
-            array[i].value + '</i></strong></td></tr>';
+    if ('records' in localStorage){
+        let records = JSON.parse(localStorage.records);
+        let array = [];
+        for (let i in records)
+            array.push({name: i, value: records[i].score});
+        array.sort(compare);
+        let td = '';
+        for (let i = 0; i < array.length; i++){
+            td += '<tr><th scope="row">'+ i.toString() + '</th><td><strong>' + array[i].name +'</strong></td><td><strong><i>' +
+                array[i].value + '</i></strong></td></tr>';
+        }
+        if (td)
+            document.getElementById('tbody').innerHTML = td;
     }
-    document.getElementById('tbody').innerHTML = td;
+
 </script>
 <script src="game/background.js"></script>
 </body>
