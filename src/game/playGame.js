@@ -45,15 +45,33 @@ function coins(coins) {
     })
 }
 // eye(x;y) = (sceneConfig.sceneWidth - 105, sceneConfig.sceneHeight/2 + 10, 20, 20 );
+//let k = 0.5, b = 2
+let point = {x: BOSS.x + BOSS.width/2, y: BOSS.y + BOSS.CURRENT_OFFSET + BOSS.height/2};
 function shoot() {
-    context.fillStyle = '#ffff00';// hex for red
-    context.fillRect( 105, sceneConfig.sceneHeight/2 + 10, 20, 5 );
-    /*
-    context.fillStyle = '#ffff00'// hex for red
-    context.fillRect(sceneConfig.sceneWidth - 105, sceneConfig.sceneHeight/2 + 10, 20, 20 );
-     */
+    //context.fillStyle = '#ffff00';// hex for red
+    //context.fillRect( 105, sceneConfig.sceneHeight/2 + 10, 20, 5 );
+    console.log(point.x , point.y)
+    let coef = createCoef();
+    let x = point.x - 20;
+    let y = coef.k * x + coef.b;
+    context.beginPath();
+    context.moveTo(point.x, point.y);
+    context.lineTo(x, y);
+    point.x = x + 15;
+    point.y = y;
+    context.lineWidth = 4;
+    context.strokeStyle = "#ff0000";
+    context.stroke();}
 
+function createCoef() {
+    let x0 = player.x,
+        y0 = player.y,
+        x1 = point.x,
+        y1 = point.y;
 
+    let k = (y0 - y1)/(x0 - x1);
+    let b = y1 - k * x1;
+    return {k: k, b:b};
 }
 
 function updateProgress(time){
