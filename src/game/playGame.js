@@ -1,14 +1,95 @@
 let coinImage = new Image();
 coinImage.src = IMAGES.COIN;
 
+class protoBullet{
+    constructor(x=getCentreBossX(), y=getCentreBossY(), auto=true, colour='#000000'){
+        this.x = x;
+        this.y = y;
+        this.colour = colour;
+        this.auto = auto;
+        this.nextX = x + 1;
+        this.nextY = y + 1;
+        this.editWay();
+    }
+
+    draw() {
+        this.checkAndChangeAuto();
+        if (this.auto){
+            this.editWay();
+        }
+        this.nextStep();
+        this.drawBullet();
+    };
+
+    checkAndChangeAuto(){
+        this.auto = false;
+        switch (this.colour) {
+            case COLORS.BLUE:
+                if (player.color === COLORS.RED)
+                    this.auto = true;
+                break;
+            case COLORS.RED:
+                if (player.color === COLORS.BLUE)
+                    this.auto = true;
+                break;
+        }
+    }
+
+    nextStep(){
+        this.nextX -= BULLET.STEP;
+        this.nextY = this.k * this.nextX + this.b;
+    }
+
+    drawBullet(){
+        context.beginPath();
+        context.moveTo(this.x, this.y);
+        context.lineTo(this.nextX, this.nextY);
+        this.x = this.nextX + BULLET.INCREASE_STEP;
+        this.y = this.nextY;
+        context.lineWidth = BULLET.WIDTH;
+        context.strokeStyle = this.colour;
+        context.stroke();
+    }
+    editWay(){
+        if (this.x < player.x)
+            return;
+        let x0 = player.x,
+            y0 = player.y,
+            x1 = this.x,
+            y1 = this.y;
+
+        this.k = (y0 - y1)/(x0 - x1);
+        this.b = y1 - this.k * x1;
+    }
+
+    isOK(){
+        return !(this.x < 0 || this.x > sceneConfig.sceneWidth || this.y < 0 || this.y > sceneConfig.sceneHeight);
+    }
+}
+
 function playGame(time=0) {
-    logic();
-    updateGame();
-    bossMove();
-    shoot();
-    updateProgress(time);
-    context.fill();
+    DT(time);
+    if (!settings.PAUSE){
+        settings.GAME_TIME += settings.dt;
+        logic();
+        updateGame();
+        bossMove();
+        enemyController(time);
+        shoot();
+        updateProgress();
+        context.fill();
+        checkGameOver();
+    }
     requestAnimationFrame(playGame);
+
+}
+
+function checkGameOver() {
+    ENEMIES.forEach((value, index) => {
+        if (distance({x: player.x, y: player.y}, {x: value.x, y: value.y}) < 100){
+            gameOver();
+        }
+    })
 }
 
 function bossMove() {
@@ -36,6 +117,10 @@ function bossMove() {
     }, false);
 }
 
+function gameOver() {
+    console.log('GAME OVER!');
+}
+
 function coins(coins) {
     console.log(coinImage)
     console.log('coins')
@@ -44,43 +129,21 @@ function coins(coins) {
         value.render(context, 150 , 100, coinImage);
     })
 }
-// eye(x;y) = (sceneConfig.sceneWidth - 105, sceneConfig.sceneHeight/2 + 10, 20, 20 );
-//let k = 0.5, b = 2
-let point = {x: BOSS.x + BOSS.width/2, y: BOSS.y + BOSS.CURRENT_OFFSET + BOSS.height/2};
+
 function shoot() {
-    //context.fillStyle = '#ffff00';// hex for red
-    //context.fillRect( 105, sceneConfig.sceneHeight/2 + 10, 20, 5 );
-    console.log(point.x , point.y)
-    let coef = createCoef();
-    let x = point.x - 20;
-    let y = coef.k * x + coef.b;
-    context.beginPath();
-    context.moveTo(point.x, point.y);
-    context.lineTo(x, y);
-    point.x = x + 15;
-    point.y = y;
-    context.lineWidth = 4;
-    context.strokeStyle = "#ff0000";
-    context.stroke();}
-
-function createCoef() {
-    let x0 = player.x,
-        y0 = player.y,
-        x1 = point.x,
-        y1 = point.y;
-
-    let k = (y0 - y1)/(x0 - x1);
-    let b = y1 - k * x1;
-    return {k: k, b:b};
+    ENEMIES.forEach((value => {
+       value.draw();
+    }))
 }
 
-function updateProgress(time){
+function updateProgress(){
     let progress = document.getElementById('myProgress');
     let fullTime = GAME[localStorage.lvl].fullTime;
-    let pr = Math.floor(time / fullTime * 100);
+    let pr = Math.floor(settings.GAME_TIME / fullTime * 100);
     progress.style.width = pr.toString() + '%';
     GAME.COMPLETED = pr;
 }
+
 function updateGame() {
 
     let img = new Image();   // Создает новое изображение
@@ -109,20 +172,8 @@ function updateGame() {
 function gY(y) {
     return (y - sceneConfig.offset)
 }
-var player = {
-  x: 50,
-  y: sceneConfig.sceneHeight - 60,
-  width: 40,
-  height: 40,
-  dx: 0,
-  dy: 0,
-  jumping: false,
-  g: 10, // gravitation
-  color: COLORS.RED
-};
 
 var controller = {
-
     left:false,
     right:false,
     up:false,
@@ -149,11 +200,38 @@ var controller = {
                 break;
             case keyboard.ESCAPE:
                 if (key_state){
-                    showModal();
+                    settings.PAUSE = !settings.PAUSE;
                 }
         }
     }
 };
+
+let enemyTimer = 0;
+function enemyController(time){
+    let enemyBreak = GAME[localStorage.lvl].enemyBreak;
+    if (time - enemyTimer > enemyBreak){
+          //console.log(getType());
+        ENEMIES.push(new protoBullet(getCentreBossX(), getCentreBossY(),
+            true,
+            getType()));
+        enemyTimer = time;
+    }
+}
+
+function getType() {
+    let r = Math.random();
+    console.log(r);
+    if (GAME[localStorage.lvl].type.RED > r){
+        console.log('RED!');
+        return COLORS.RED;
+    }else if (GAME[localStorage.lvl].type.BLUE < r){
+        console.log('BLUE!');
+        return COLORS.BLUE;
+    }else {
+        console.log('YELLOW!');
+        return COLORS.YELLOW;
+    }
+}
 
 function logic(){
     if (controller.up && player.jumping === false) {
@@ -184,13 +262,13 @@ function logic(){
         player.dy = 0;
     }
 
-    if (player.x < 0 ){
+    if (player.x < 0 )
         player.dx += 50;
-        console.log('GAME OVER')
-    }else if (player.x > sceneConfig.sceneWidth){
+    else if (player.x > sceneConfig.sceneWidth)
         player.dx -= 50;
-    }
 }
+
+
 
 window.addEventListener("keydown", controller.keyListener);
 window.addEventListener("keyup", controller.keyListener);
