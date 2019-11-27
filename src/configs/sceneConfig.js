@@ -100,6 +100,14 @@ function getCentreBossY() {
     return BOSS.y + BOSS.height/2 + BOSS.CURRENT_OFFSET;
 }
 
+function getCentrePlayerX() {
+    return player.x + player.width/2;
+}
+
+function getCentrePlayerY() {
+    return player.y
+}
+
 function distance(point1, point2) {
     let dx = point1.x - point2.x;
     let dy = point1.y - point2.y;
@@ -114,7 +122,7 @@ function DT(time, unpause=false) {
 }
 
 //////////// MUSIC ////////////////
-let musicBackGroung = new Audio('../src/static/sounds/gf.mp3');
+let musicBackGround = new Audio('../src/static/sounds/gf.mp3');
 let sound = false;
 let gameOverSound = new Audio('../src/static/sounds/game_over.mp3');
 let jumpSound = new Audio('../src/static/sounds/jump.mp3');

@@ -1,54 +1,53 @@
 class Coin {
-    constructor(img, cont){
-        this.ctx = cont;
-        this.image = img;
-        this.tickCount = 0;
-        this.frameIndex = 0;
-        this.ticksPerFrame = 0;
-        this.numberOfFrames = 1;
-        this.w = 1000;
-        this.h = 100;
-        this.start();
+    constructor() {
+        this.sx = 1;
+        this.sy = 0;
+        this.sWidth = 44;
+        this.sHeight = 100;
+        this.dx = 400;
+        this.dy = 40;
+        this.dWidth = 50;
+        this.dHeight = 100;
+        this.frameIndex = 1;
+        this.maxIndex = 8;
+        // helpers
+        this.iHelper = 0;
+        this.iHelperMax = 3;
     }
 
-    update() {
-        this.tickCount++;
-
-        if (this.tickCount > this.ticksPerFrame) {
-            this.tickCount = 0;
-            if (this.frameIndex < this.numberOfFrames - 1) {
-                this.frameIndex++;
-            } else {
-                this.frameIndex = 0;
-            }
-        }
+    draw() {
+        let img = new Image();
+        img.src = IMAGES.COIN;
+        console.log(this);
+        img.addEventListener("load", () => {
+            context.drawImage(
+                img,
+                this.sx +  this.frameIndex * this.sWidth,
+                this.sy,
+                this.sWidth,
+                this.sHeight,
+                this.dx,
+                this.dy,
+                this.dWidth,
+                this.dHeight
+            )
+        }, false);
+        if (this.iHelper > this.iHelperMax){
+            this.iHelper = 0;
+            this.frameIndex++;
+            if (this.frameIndex >= this.maxIndex)
+                this.frameIndex = 1;
+        }else this.iHelper++;
+        this.dx-=3;
     }
 
-
-    render() {
-        this.ctx.clearRect(0, 0, this.width / this.numberOfFrames, this.height);
-        this.ctx.drawImage(
-            this.image,
-            this.frameIndex * this.width / this.numberOfFrames,
-            60,
-            this.width / this.numberOfFrames,
-            this.height,
-            0,
-            0,
-            this.width / this.numberOfFrames,
-            this.height
-        )
+    getCentreX(){
+        return this.dx + this.dWidth/2;
     }
 
-    start() {
-        let loop = () => {
-            this.update();
-            this.render();
-
-            window.requestAnimationFrame(loop);
-        }
-
-        window.requestAnimationFrame(loop);
+    getCentreY(){
+        return this.dy + this.dHeight/2;
     }
+
 
 }

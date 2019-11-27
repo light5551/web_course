@@ -1,5 +1,5 @@
-let coinImage = new Image();
-coinImage.src = IMAGES.COIN;
+//let coinImage = new Image();
+//coinImage.src = IMAGES.COIN;
 
 class protoBullet{
     constructor(x=getCentreBossX(), y=getCentreBossY(), auto=true, colour='#000000'){
@@ -54,8 +54,8 @@ class protoBullet{
         context.stroke();
     }
     editWay(){
-        let x0 = player.x,
-            y0 = player.y,
+        let x0 = getCentrePlayerX(),
+            y0 = getCentrePlayerY(),
             x1 = this.x,
             y1 = this.y;
 
@@ -70,9 +70,13 @@ class protoBullet{
 
 function playGame(time=0) {
     // MUSIC
+    console.log(sound);
     if (!sound){
-        musicBackGroung.play();
-        sound = true;
+        musicBackGround.play().then(() => {
+            sound = true;
+        }).catch(() => {
+            console.log('TAP SMT');
+        });
     }
     //
     if (GAME.FINISHED){
@@ -86,6 +90,7 @@ function playGame(time=0) {
             bossMove();
             enemyController(time);
             shoot();
+            coins();
             updateProgress();
             context.fill();
             checkGameOver();
@@ -138,20 +143,15 @@ function bossMove() {
 }
 
 function gameOver() {
-    console.log('GAME OVER!');
-    musicBackGroung.pause();
+    musicBackGround.pause();
     shootSound.pause();
     gameOverSound.play();
     GAME.FINISHED = true;
 }
 
-function coins(coins) {
-    console.log(coinImage)
-    console.log('coins')
-    cns[0].render(context, 150, 100, coinImage)
-    coins.forEach((value, index) => {
-        value.render(context, 150 , 100, coinImage);
-    })
+let c = new Coin();
+function coins() {
+    c.draw();
 }
 
 function shoot() {
