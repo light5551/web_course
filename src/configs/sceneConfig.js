@@ -12,7 +12,8 @@ keyboard = {
     SHIFT: 'Shift',
     ALT: 'Alt',
     TAB: 'Tab',
-    ESCAPE: 'Escape'
+    ESCAPE: 'Escape',
+    RESTART: 'r'
 };
 
 settings = {
@@ -57,16 +58,19 @@ GAME = {
     2: {
         fullTime: 50 * 1000
     },
-    COMPLETED: 0
+    COMPLETED: 0,
+    FINISHED: false
 };
 GROUND.img1.src = '../src/static/images/B_IMAGE.jpg';
 
 IMAGES = {
   FON: '../src/static/images/b_fon.png',
+  TREE_FON: '../src/static/images/tree_grav_falls.png',
   BILL: '../src/static/images/bill.png',
   HORROR_BILL: '../src/static/images/horror_bill.png',
   LOSE_BILL: '../src/static/images/l_bill.png',
-  COIN: '../src/static/images/coin.png'
+  COIN: '../src/static/images/coin.png',
+  GAME_OVER: '../src/static/images/game_over.jpg'
 };
 
 BOSS = {
@@ -109,3 +113,9 @@ function DT(time, unpause=false) {
     settings.TIME = time;
 }
 
+//////////// MUSIC ////////////////
+let musicBackGroung = new Audio('../src/static/sounds/gf.mp3');
+let sound = false;
+let gameOverSound = new Audio('../src/static/sounds/game_over.mp3');
+let jumpSound = new Audio('../src/static/sounds/jump.mp3');
+let shootSound = new Audio('../src/static/sounds/shoot.mp3');

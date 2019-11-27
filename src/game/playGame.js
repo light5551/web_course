@@ -10,6 +10,9 @@ class protoBullet{
         this.nextX = x + 1;
         this.nextY = y + 1;
         this.editWay();
+        shootSound.currentTime = 0;
+        shootSound.play();
+        //
     }
 
     draw() {
@@ -51,8 +54,6 @@ class protoBullet{
         context.stroke();
     }
     editWay(){
-        if (this.x < player.x)
-            return;
         let x0 = player.x,
             y0 = player.y,
             x1 = this.x,
@@ -68,25 +69,44 @@ class protoBullet{
 }
 
 function playGame(time=0) {
-    DT(time);
-    if (!settings.PAUSE){
-        settings.GAME_TIME += settings.dt;
-        logic();
-        updateGame();
-        bossMove();
-        enemyController(time);
-        shoot();
-        updateProgress();
-        context.fill();
-        checkGameOver();
+    // MUSIC
+    if (!sound){
+        musicBackGroung.play();
+        sound = true;
     }
+    //
+    if (GAME.FINISHED){
+        drawGameOver();
+    }else {
+        DT(time);
+        if (!settings.PAUSE){
+            settings.GAME_TIME += settings.dt;
+            logic();
+            updateGame();
+            bossMove();
+            enemyController(time);
+            shoot();
+            updateProgress();
+            context.fill();
+            checkGameOver();
+        }
+    }
+
     requestAnimationFrame(playGame);
 
 }
 
+function drawGameOver() {
+    let img = new Image();
+    img.src = IMAGES.GAME_OVER;
+    img.addEventListener("load", function() {
+        context.drawImage(img, 0, 0, 1000, 1000,0,0, sceneConfig.sceneWidth, sceneConfig.sceneHeight);
+    }, false);
+}
+
 function checkGameOver() {
     ENEMIES.forEach((value, index) => {
-        if (distance({x: player.x, y: player.y}, {x: value.x, y: value.y}) < 100){
+        if (distance({x: player.x, y: player.y}, {x: value.x, y: value.y}) < 10){
             gameOver();
         }
     })
@@ -119,6 +139,10 @@ function bossMove() {
 
 function gameOver() {
     console.log('GAME OVER!');
+    musicBackGroung.pause();
+    shootSound.pause();
+    gameOverSound.play();
+    GAME.FINISHED = true;
 }
 
 function coins(coins) {
@@ -147,7 +171,7 @@ function updateProgress(){
 function updateGame() {
 
     let img = new Image();   // Создает новое изображение
-    img.src = IMAGES.FON;
+    img.src = IMAGES.TREE_FON;
     img.addEventListener("load", function() {
         context.drawImage(img, 0, 0, sceneConfig.sceneWidth, sceneConfig.sceneHeight);
     }, false);
@@ -162,7 +186,6 @@ function updateGame() {
     context.beginPath();
 
     context.fillStyle = player.color;// hex for red
-    //context.rect( player.x, gY(player.y), player.width, player.height);
     context.fillRect(player.x, gY(player.y), player.width, player.height);
     context.beginPath();
 
@@ -179,11 +202,14 @@ var controller = {
     up:false,
     keyListener:function(event) {
         let key_state = (event.type === "keydown");
+        console.log(event.key);
         switch(event.key) {
             case keyboard.LEFT:// left key
                 controller.left = key_state;
                 break;
             case keyboard.UP:// up key
+                jumpSound.currentTime = 0;
+                jumpSound.play();
                 controller.up = key_state;
                 break;
             case keyboard.RIGHT:// right key
@@ -199,9 +225,15 @@ var controller = {
                 }
                 break;
             case keyboard.ESCAPE:
-                if (key_state){
+                if (key_state)
                     settings.PAUSE = !settings.PAUSE;
-                }
+                break;
+            case keyboard.RESTART:
+            case keyboard.RESTART.toUpperCase:
+                if (key_state)
+                    window.location.reload();
+                break;
+
         }
     }
 };
