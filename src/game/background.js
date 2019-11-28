@@ -11,7 +11,7 @@ var opts = {
 
     canvasBody = document.getElementById("bg-canvas"),
     canvas = canvasBody.getContext("2d"),
-    w = canvasBody.width = window.innerWidth,
+    w = canvasBody.width = window.innerWidth//window.innerWidth,
     h = canvasBody.height = window.innerHeight,
 
     tick = 0,

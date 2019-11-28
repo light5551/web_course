@@ -1,76 +1,6 @@
-//let coinImage = new Image();
-//coinImage.src = IMAGES.COIN;
-
-class protoBullet{
-    constructor(x=getCentreBossX(), y=getCentreBossY(), auto=true, colour='#000000'){
-        this.x = x;
-        this.y = y;
-        this.colour = colour;
-        this.auto = auto;
-        this.nextX = x + 1;
-        this.nextY = y + 1;
-        this.editWay();
-        shootSound.currentTime = 0;
-        shootSound.play();
-        //
-    }
-
-    draw() {
-        this.checkAndChangeAuto();
-        if (this.auto){
-            this.editWay();
-        }
-        this.nextStep();
-        this.drawBullet();
-    };
-
-    checkAndChangeAuto(){
-        this.auto = false;
-        switch (this.colour) {
-            case COLORS.BLUE:
-                if (player.color === COLORS.RED)
-                    this.auto = true;
-                break;
-            case COLORS.RED:
-                if (player.color === COLORS.BLUE)
-                    this.auto = true;
-                break;
-        }
-    }
-
-    nextStep(){
-        this.nextX -= BULLET.STEP;
-        this.nextY = this.k * this.nextX + this.b;
-    }
-
-    drawBullet(){
-        context.beginPath();
-        context.moveTo(this.x, this.y);
-        context.lineTo(this.nextX, this.nextY);
-        this.x = this.nextX + BULLET.INCREASE_STEP;
-        this.y = this.nextY;
-        context.lineWidth = BULLET.WIDTH;
-        context.strokeStyle = this.colour;
-        context.stroke();
-    }
-    editWay(){
-        let x0 = getCentrePlayerX(),
-            y0 = getCentrePlayerY(),
-            x1 = this.x,
-            y1 = this.y;
-
-        this.k = (y0 - y1)/(x0 - x1);
-        this.b = y1 - this.k * x1;
-    }
-
-    isOK(){
-        return !(this.x < 0 || this.x > sceneConfig.sceneWidth || this.y < 0 || this.y > sceneConfig.sceneHeight);
-    }
-}
-
+let wasGameOver = false;
 function playGame(time=0) {
     // MUSIC
-    console.log(sound);
     if (!sound){
         musicBackGround.play().then(() => {
             sound = true;
@@ -78,9 +8,13 @@ function playGame(time=0) {
             console.log('TAP SMT');
         });
     }
-    //
+
     if (GAME.FINISHED){
+        if (!GAME.WON)
         drawGameOver();
+        if (!wasGameOver)
+        gameOver();
+        wasGameOver = true;
     }else {
         DT(time);
         if (!settings.PAUSE){
@@ -89,6 +23,7 @@ function playGame(time=0) {
             updateGame();
             bossMove();
             enemyController(time);
+            coinController(time);
             shoot();
             coins();
             updateProgress();
@@ -96,10 +31,9 @@ function playGame(time=0) {
             checkGameOver();
         }
     }
-
     requestAnimationFrame(playGame);
-
 }
+
 
 function drawGameOver() {
     let img = new Image();
@@ -111,7 +45,7 @@ function drawGameOver() {
 
 function checkGameOver() {
     ENEMIES.forEach((value, index) => {
-        if (distance({x: player.x, y: player.y}, {x: value.x, y: value.y}) < 10){
+        if (distance({x: player.x, y: player.y}, {x: value.x, y: value.y}) < EQUAL_DISTANCE){
             gameOver();
         }
     })
@@ -142,16 +76,80 @@ function bossMove() {
     }, false);
 }
 
+function smartBossMove() {
+    let settings = getSettings();
+    let bossImage = new Image();
+}
+
+function getSettings() {
+    let stateLevel = GAME.COMPLETED > 60 ? HARD_STATE : NORMAL_STATE;
+    let settings = BOSS_LEVELS[parseInt(localStorage.lvl)][stateLevel];
+    return settings;
+}
+
 function gameOver() {
     musicBackGround.pause();
     shootSound.pause();
     gameOverSound.play();
     GAME.FINISHED = true;
+    nextLocation()
 }
 
-let c = new Coin();
+function nextLocation() {
+    switch (parseInt(localStorage.lvl)) {
+        case 1:
+            if (GAME.WON){
+                localStorage.lvl = 2;
+            }
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+            break;
+        case 2:
+            if (GAME.WON){
+                writeRecord();
+                localStorage.lvl = 1;
+                window.location = 'menu.html';
+            }else
+                console.log('a')
+               //window.location.reload();
+            break;
+    }
+}
+
+function writeRecord() {
+    let nickname = localStorage.nickname;
+    let score = parseInt(document.getElementById('score').innerText);
+    console.log(score);
+    let json;
+    if (localStorage.records)
+        json = JSON.parse(localStorage.records);
+    else json = {};
+    console.log(json);
+    if (json[nickname]){
+        if (json[nickname].score < score)
+            json[nickname].score = score;
+    }else {
+        json[nickname] = {score: score};
+    }
+    localStorage.records = JSON.stringify(json);
+}
+
 function coins() {
-    c.draw();
+    COINS.forEach((value, index, array) => {
+        value.draw();
+        if (distance({x: player.x, y: player.y}, {x: value.getCentreX(), y: value.getCentreY()}) < EQUAL_DISTANCE){
+            array.splice(index, 1);
+            plusScore(5);
+            coinSound.currentTime = 0;
+            coinSound.play();
+        }
+    });
+}
+
+function plusScore(value=1) {
+    let score = document.getElementById('score');
+    score.innerText = (parseInt(score.innerText) + value).toString();
 }
 
 function shoot() {
@@ -166,12 +164,16 @@ function updateProgress(){
     let pr = Math.floor(settings.GAME_TIME / fullTime * 100);
     progress.style.width = pr.toString() + '%';
     GAME.COMPLETED = pr;
+    if (pr > 100){
+        GAME.WON = true;
+        GAME.FINISHED = true;
+    }
 }
 
 function updateGame() {
 
     let img = new Image();   // Создает новое изображение
-    img.src = IMAGES.TREE_FON;
+    img.src = IMAGES.FON;
     img.addEventListener("load", function() {
         context.drawImage(img, 0, 0, sceneConfig.sceneWidth, sceneConfig.sceneHeight);
     }, false);
@@ -188,8 +190,6 @@ function updateGame() {
     context.fillStyle = player.color;// hex for red
     context.fillRect(player.x, gY(player.y), player.width, player.height);
     context.beginPath();
-
-    //context.fill();
 }
 
 function gY(y) {
@@ -202,7 +202,6 @@ var controller = {
     up:false,
     keyListener:function(event) {
         let key_state = (event.type === "keydown");
-        console.log(event.key);
         switch(event.key) {
             case keyboard.LEFT:// left key
                 controller.left = key_state;
@@ -233,6 +232,9 @@ var controller = {
                 if (key_state)
                     window.location.reload();
                 break;
+            case keyboard.MENU:
+                if (key_state)
+                    window.location = 'menu.html';
 
         }
     }
@@ -240,7 +242,8 @@ var controller = {
 
 let enemyTimer = 0;
 function enemyController(time){
-    let enemyBreak = GAME[localStorage.lvl].enemyBreak;
+    let settings = getSettings();
+    let enemyBreak = settings.enemyBreak;//GAME[localStorage.lvl].enemyBreak;
     if (time - enemyTimer > enemyBreak){
           //console.log(getType());
         ENEMIES.push(new protoBullet(getCentreBossX(), getCentreBossY(),
@@ -250,19 +253,24 @@ function enemyController(time){
     }
 }
 
+let coinTimer = 0;
+function coinController(time) {
+    let coinBreak = GAME[localStorage.lvl].coinBreak;
+    if (time - coinTimer > coinBreak){
+        COINS.push(new Coin());
+        coinTimer = time;
+    }
+}
+
 function getType() {
     let r = Math.random();
-    console.log(r);
-    if (GAME[localStorage.lvl].type.RED > r){
-        console.log('RED!');
+    let settings = getSettings();
+    if (settings.type.RED > r)
         return COLORS.RED;
-    }else if (GAME[localStorage.lvl].type.BLUE < r){
-        console.log('BLUE!');
+    else if (settings.type.BLUE < r)
         return COLORS.BLUE;
-    }else {
-        console.log('YELLOW!');
+    else
         return COLORS.YELLOW;
-    }
 }
 
 function logic(){

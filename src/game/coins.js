@@ -4,8 +4,8 @@ class Coin {
         this.sy = 0;
         this.sWidth = 44;
         this.sHeight = 100;
-        this.dx = 400;
-        this.dy = 40;
+        this.dx = sceneConfig.sceneWidth;
+        this.dy = getRandom(sceneConfig.sceneHeight);
         this.dWidth = 50;
         this.dHeight = 100;
         this.frameIndex = 1;
@@ -18,7 +18,6 @@ class Coin {
     draw() {
         let img = new Image();
         img.src = IMAGES.COIN;
-        console.log(this);
         img.addEventListener("load", () => {
             context.drawImage(
                 img,
@@ -49,5 +48,7 @@ class Coin {
         return this.dy + this.dHeight/2;
     }
 
-
+    isOK(){
+        return !(this.dx < 0 || this.dx > sceneConfig.sceneWidth || this.dy < 0 || this.dy > sceneConfig.sceneHeight);
+    }
 }

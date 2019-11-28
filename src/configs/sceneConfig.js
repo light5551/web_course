@@ -1,3 +1,5 @@
+EQUAL_DISTANCE = 40;
+
 sceneConfig = {
     sceneWidth: 1000,
     sceneHeight: 600,
@@ -13,7 +15,8 @@ keyboard = {
     ALT: 'Alt',
     TAB: 'Tab',
     ESCAPE: 'Escape',
-    RESTART: 'r'
+    RESTART: 'r',
+    MENU: 'm'
 };
 
 settings = {
@@ -48,18 +51,26 @@ GROUND = {
 
 GAME = {
     1: {
-        fullTime: 40 * 1000,
+        fullTime: 20 * 1000,
         enemyBreak: 2 * 1000,
+        coinBreak: 500,
         type: {
             RED: 0.25,
             BLUE: 0.75
         }
     },
     2: {
-        fullTime: 50 * 1000
+        fullTime: 40 * 1000,
+        enemyBreak: 2 * 1000,
+        coinBreak: 500,
+        type: {
+            RED: 0.25,
+            BLUE: 0.75
+        }
     },
     COMPLETED: 0,
-    FINISHED: false
+    FINISHED: false,
+    WON: false
 };
 GROUND.img1.src = '../src/static/images/B_IMAGE.jpg';
 
@@ -91,6 +102,7 @@ BULLET = {
 };
 
 const ENEMIES = [];
+const COINS = [];
 
 function getCentreBossX() {
     return BOSS.x + BOSS.width/2;
@@ -108,13 +120,6 @@ function getCentrePlayerY() {
     return player.y
 }
 
-function distance(point1, point2) {
-    let dx = point1.x - point2.x;
-    let dy = point1.y - point2.y;
-    return Math.sqrt(
-        dx * dx + dy * dy
-    );
-}
 
 function DT(time, unpause=false) {
     settings.dt = time - settings.TIME;
@@ -127,3 +132,4 @@ let sound = false;
 let gameOverSound = new Audio('../src/static/sounds/game_over.mp3');
 let jumpSound = new Audio('../src/static/sounds/jump.mp3');
 let shootSound = new Audio('../src/static/sounds/shoot.mp3');
+let coinSound = new Audio('../src/static/sounds/getCoin2.mp3');

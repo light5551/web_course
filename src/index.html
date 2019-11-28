@@ -15,8 +15,10 @@
     <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" id="myProgress" role="progressbar"
          style="width: 0" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 </div>
-<div class="container">
 
+<div id="score" class="right-corner">0</div>
+
+<div class="container">
     <canvas id="GameScene"></canvas>
     <div class="align-bottom">
         <kbd>Shift</kbd> <var>- смена гравитации,</var>
@@ -29,13 +31,13 @@
 </div>
 
 
-
-
-
+<script src="game/utils.js"></script>
 <script src="game/modals.js"></script>
 <script src="game/coins.js"></script>
+<script src="game/protoBullet.js"></script>
 
 <script src="configs/sceneConfig.js"></script>
+<script src="configs/bossLevels.js"></script>
 <script src="game/playGame.js"></script>
 <script src="startGame.js"></script>
 
