@@ -1,4 +1,5 @@
 EQUAL_DISTANCE = 40;
+EQUAL_DISTANCE_FOR_MONEY = 60;
 
 sceneConfig = {
     sceneWidth: 1000,
@@ -60,7 +61,7 @@ GAME = {
         }
     },
     2: {
-        fullTime: 40 * 1000,
+        fullTime: 20 * 1000,
         enemyBreak: 2 * 1000,
         coinBreak: 500,
         type: {
@@ -81,7 +82,8 @@ IMAGES = {
   HORROR_BILL: '../src/static/images/horror_bill.png',
   LOSE_BILL: '../src/static/images/l_bill.png',
   COIN: '../src/static/images/coin.png',
-  GAME_OVER: '../src/static/images/game_over.jpg'
+  GAME_OVER: '../src/static/images/game_over.jpg',
+  FULL_BILL: '../src/static/images/full_bill.png'
 };
 
 BOSS = {

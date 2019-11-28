@@ -21,7 +21,8 @@ function playGame(time=0) {
             settings.GAME_TIME += settings.dt;
             logic();
             updateGame();
-            bossMove();
+            //bossMove();
+            smartBossMove();
             enemyController(time);
             coinController(time);
             shoot();
@@ -76,9 +77,16 @@ function bossMove() {
     }, false);
 }
 
+let myBoss = undefined;
 function smartBossMove() {
+    if (!myBoss)
+        myBoss = new BillBOSS();
     let settings = getSettings();
     let bossImage = new Image();
+    bossImage.src = IMAGES.FULL_BILL;
+    bossImage.addEventListener("load", function() {
+        context.drawImage(bossImage, 300, 410, 135, 130 , BOSS.x, BOSS.y + BOSS.CURRENT_OFFSET, BOSS.width, BOSS.height);
+    }, false);
 }
 
 function getSettings() {
@@ -90,7 +98,8 @@ function getSettings() {
 function gameOver() {
     musicBackGround.pause();
     shootSound.pause();
-    gameOverSound.play();
+    if (!GAME.WON)
+        gameOverSound.play();
     GAME.FINISHED = true;
     nextLocation()
 }
@@ -138,7 +147,7 @@ function writeRecord() {
 function coins() {
     COINS.forEach((value, index, array) => {
         value.draw();
-        if (distance({x: player.x, y: player.y}, {x: value.getCentreX(), y: value.getCentreY()}) < EQUAL_DISTANCE){
+        if (distance({x: player.x, y: player.y}, {x: value.getCentreX(), y: value.getCentreY()}) < EQUAL_DISTANCE_FOR_MONEY){
             array.splice(index, 1);
             plusScore(5);
             coinSound.currentTime = 0;
@@ -153,9 +162,12 @@ function plusScore(value=1) {
 }
 
 function shoot() {
-    ENEMIES.forEach((value => {
+    ENEMIES.forEach((value, index, array) => {
        value.draw();
-    }))
+       if (!value.isOK()){
+           array.splice(index, 1);
+       }
+    })
 }
 
 function updateProgress(){

@@ -15,8 +15,8 @@ BOSS_LEVELS = {
             enemyBreak: 1000,
             coinBreak: 2 * 1000,
             type: {
-                RED: .25,
-                BLUE: .75
+                RED: 0,//.25,
+                BLUE: 0//.75
             }
         }
     },
@@ -27,16 +27,16 @@ BOSS_LEVELS = {
             enemyBreak: 1000,
             coinBreak: 500,
             type: {
-                RED: .25,
-                BLUE: .75
+                RED: 0,//.25,
+                BLUE: 1//.75
             }
         },
         hard: {
             enemyBreak: 500,
             coinBreak: 2 * 1000,
             type: {
-                RED: .30,
-                BLUE: .70
+                RED: 0,//.30,
+                BLUE: 0//.70
             }
         }
     }

@@ -5,7 +5,7 @@ class Coin {
         this.sWidth = 44;
         this.sHeight = 100;
         this.dx = sceneConfig.sceneWidth;
-        this.dy = getRandom(sceneConfig.sceneHeight);
+        this.dy = getRandom(sceneConfig.sceneHeight - sceneConfig.offset);
         this.dWidth = 50;
         this.dHeight = 100;
         this.frameIndex = 1;
