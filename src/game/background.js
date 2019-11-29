@@ -11,7 +11,7 @@ var opts = {
 
     canvasBody = document.getElementById("bg-canvas"),
     canvas = canvasBody.getContext("2d"),
-    w = canvasBody.width = window.innerWidth//window.innerWidth,
+    w = canvasBody.width = window.innerWidth,
     h = canvasBody.height = window.innerHeight,
 
     tick = 0,
@@ -21,7 +21,7 @@ var opts = {
 function anim() {
     setTimeout(function() {
         window.requestAnimationFrame(anim)
-    }, 1000 / 30) //Setting the FPS by dividing the one second by <frames>
+    }, 1000 / 30)
     step();
 
     ++tick;
@@ -33,7 +33,7 @@ function anim() {
     }
 }
 
-anim() //Calling the animation function
+anim();
 
 function step() {
     let fillColor = opts.color.replace("hue", currentHue);
@@ -52,7 +52,7 @@ window.addEventListener("resize", function() { //Just in case someone resizes th
 });
 
 function isNaturalNumber(n) {
-    n = n.toString(); // force the value incase it is not
+    n = n.toString();
     var n1 = Math.abs(n),
         n2 = parseInt(n, 10);
     return !isNaN(n1) && n2 === n1 && n1.toString() === n;

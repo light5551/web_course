@@ -81,12 +81,7 @@ let myBoss = undefined;
 function smartBossMove() {
     if (!myBoss)
         myBoss = new BillBOSS();
-    let settings = getSettings();
-    let bossImage = new Image();
-    bossImage.src = IMAGES.FULL_BILL;
-    bossImage.addEventListener("load", function() {
-        context.drawImage(bossImage, 300, 410, 135, 130 , BOSS.x, BOSS.y + BOSS.CURRENT_OFFSET, BOSS.width, BOSS.height);
-    }, false);
+    myBoss.drawRAW();
 }
 
 function getSettings() {
@@ -108,6 +103,7 @@ function nextLocation() {
     switch (parseInt(localStorage.lvl)) {
         case 1:
             if (GAME.WON){
+                localStorage.lastScore = parseInt(document.getElementById('score').innerText)
                 localStorage.lvl = 2;
             }
             setTimeout(() => {
@@ -128,6 +124,7 @@ function nextLocation() {
 
 function writeRecord() {
     let nickname = localStorage.nickname;
+    let lastScore = localStorage.lastScore;
     let score = parseInt(document.getElementById('score').innerText);
     console.log(score);
     let json;
@@ -136,8 +133,8 @@ function writeRecord() {
     else json = {};
     console.log(json);
     if (json[nickname]){
-        if (json[nickname].score < score)
-            json[nickname].score = score;
+        if (json[nickname].score < (score + lastScore))
+            json[nickname].score = score + lastScore;
     }else {
         json[nickname] = {score: score};
     }
